@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Customer.Data;
@@ -8,6 +9,7 @@ namespace Services.Customer.Controllers
 {
     [Route("api/customers")]
     [ApiController]
+    [EnableCors]
     public class CustomersController : ControllerBase
     {
         private readonly CustomerDBContext _dbContext;
@@ -27,6 +29,12 @@ namespace Services.Customer.Controllers
         public async Task<ActionResult> Get()
         {
             return Ok(await _dbContext.Customers.ToListAsync());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> Get(Guid id)
+        {
+            return Ok(await _dbContext.Customers.FindAsync(id));
         }
     }
 }

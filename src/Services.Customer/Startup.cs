@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,8 @@ namespace Services.Customer
         }
 
         public IConfiguration Configuration { get; }
+        readonly string CorsPolicy = "_corsPolicy";
+
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -27,6 +30,17 @@ namespace Services.Customer
             );
 
             services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: CorsPolicy,
+                                  builder =>
+                                  {
+                                      builder.AllowAnyOrigin()
+                                       .AllowAnyMethod()
+                                       .AllowAnyHeader();
+                                  });
+            });
+
 
             services.AddKafkaConsumer<string, User, UserCreatedHandler>(p =>
             {
@@ -44,8 +58,9 @@ namespace Services.Customer
             }
 
             DbInitilializer.Initialize(app.ApplicationServices);
-
+            app.UseCors(CorsPolicy);
             app.UseRouting();
+            app.UseMiddleware<CorsMiddleware>();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

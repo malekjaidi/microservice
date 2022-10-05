@@ -22,7 +22,7 @@ namespace Services.Identity.Commands.Handlers
         protected override async Task Handle(RegisterUserCommand command, CancellationToken cancellationToken)
         {
             if (await _dbContext.Users.AsNoTracking().AnyAsync(s => s.Email == command.Email))
-                throw new ApplicationException("Email is already exist.");
+                throw new ApplicationException("Email already exists.");
 
             var user = new User
             {

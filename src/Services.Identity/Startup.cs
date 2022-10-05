@@ -1,6 +1,7 @@
 using System.Reflection;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,8 @@ namespace Services.Identity
 
         public IConfiguration Configuration { get; }
 
+        readonly string CorsPolicy = "_corsPolicy";
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<IdentityDBContext>(options =>
@@ -30,6 +33,17 @@ namespace Services.Identity
             services.AddMediatR(typeof(RegisterUserCommandHandler).GetTypeInfo().Assembly);
 
             services.AddControllers();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: CorsPolicy,
+                                  builder =>
+                                  {
+                                      builder.AllowAnyOrigin()
+                                       .AllowAnyMethod()
+                                       .AllowAnyHeader();
+                                  });
+            });
 
             services.AddKafkaMessageBus();
 
@@ -49,7 +63,9 @@ namespace Services.Identity
 
             DbInitilializer.Initialize(app.ApplicationServices);
 
+            app.UseCors(CorsPolicy);
             app.UseRouting();
+            app.UseMiddleware<CorsMiddleware>();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
