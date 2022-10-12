@@ -24,5 +24,16 @@ namespace Services.Identity.Controllers
         {
             return Ok(await _mediator.Send(command));
         }
+        [HttpPut]
+        public async Task<ActionResult> UpdateUser([FromBody] UpdateUserCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+        [HttpDelete]
+        public async Task<ActionResult> deleteuser([FromBody] RemoveUserCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+
     }
 }

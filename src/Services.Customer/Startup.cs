@@ -42,7 +42,7 @@ namespace Services.Customer
             });
 
 
-            services.AddKafkaConsumer<string, User, UserCreatedHandler>(p =>
+            services.AddKafkaConsumer<string, User, UsersHandler>(p =>
             {
                 p.Topic = "users";
                 p.GroupId = "users_group";

@@ -31,10 +31,6 @@ namespace Services.Customer.Controllers
             return Ok(await _dbContext.Customers.ToListAsync());
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult> Get(Guid id)
-        {
-            return Ok(await _dbContext.Customers.FindAsync(id));
-        }
+        
     }
 }

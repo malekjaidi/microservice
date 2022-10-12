@@ -38,7 +38,7 @@ namespace Services.Identity.Commands.Handlers
 
             await _dbContext.SaveChangesAsync();
 
-            await _bus.PublishAsync(command.Email, user);
+            await _bus.PublishAsync("Add", user);
         }
     }
 }
